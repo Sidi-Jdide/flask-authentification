@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, g
-from backend.app.models.user_model import User
-from backend.app.utils.jwt_utils import hash_password, check_password, generate_tokens
+from ..models.user_model import User
+from ..utils.jwt import hash_password, check_password, generate_tokens
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -47,3 +48,10 @@ def login():
         return jsonify(access_token=tokens[0], refresh_token=tokens[1]), 200
 
     return jsonify({"msg": "Bad username or password"}), 401
+
+@auth_bp.route('/protected', methods=['GET'])
+@jwt_required()
+def protected():
+        # Récupérer l'identité de l'utilisateur à partir du token JWT
+        current_user = get_jwt_identity()
+        return jsonify(logged_in_as=current_user), 200
