@@ -13,3 +13,13 @@ class User(Base):
 
     def __repr__(self):
         return f'<User {self.username}>'
+    
+    def __json__(self):
+        d = {
+         'id': self.id,
+         'username': self.username
+        }
+        
+        return d
+        
+        
